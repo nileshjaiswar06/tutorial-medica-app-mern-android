@@ -14,7 +14,7 @@ function sendMail(recieverEmailId, subject, body) {
 
 
       return transporter.sendMail({
-        from: "10xtarun@gmail.com",
+        from: process.env.MAILER_USER, // sender address
         to: recieverEmailId, 
         subject: subject,
         text: body
