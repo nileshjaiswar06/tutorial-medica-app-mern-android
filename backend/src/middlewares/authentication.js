@@ -2,15 +2,23 @@ const jwt = require("jsonwebtoken")
 
 function verifyAccessToken(req, res, next) {
     try {
+        console.log('Backend - Auth Header:', req.headers.authorization);
+        
         if(req.headers.authorization == null) {
             throw "invalid access"
         }
-        const verifiedData = jwt.verify(req.headers.authorization, process.env.SECRET)
-        console.log("verify : ", verifiedData)
+
+        // Remove 'Bearer ' prefix if it exists
+        const token = req.headers.authorization.replace('Bearer ', '');
+        console.log('Backend - Token after Bearer removal:', token);
+        
+        const verifiedData = jwt.verify(token, process.env.SECRET)
+        console.log("Backend - Verified data:", verifiedData)
 
         req.userEmail = verifiedData.email 
         req.userRole = verifiedData.role
     } catch (error) {
+        console.log('Backend - Auth Error:', error);
         return res.status(403).json({
             message: "authentication failed",
             error: "invalid access",

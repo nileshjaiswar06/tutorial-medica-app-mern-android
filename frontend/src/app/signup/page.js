@@ -58,20 +58,22 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api', formData);
+      const response = await axios.post('/api/auth/signup', formData);
       
       if (response.data) {
-        toast.success('Account created successfully!');
-        // Redirect based on role
-        if (formData.role === 'patient') {
-          router.push('/patient/dashboard');
+        // Store the access token
+        if (response.data.data.accessToken) {
+          localStorage.setItem('accessToken', response.data.data.accessToken);
+          toast.success('Account created successfully!');
+          // Redirect to email verification page
+          router.push('/verify-email');
         } else {
-          router.push('/doctor/dashboard');
+          throw new Error('No access token received');
         }
       }
     } catch (error) {
       console.error('Signup error:', error);
-      const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Something went wrong';
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Something went wrong';
       toast.error(errorMessage);
     } finally {
       setLoading(false);

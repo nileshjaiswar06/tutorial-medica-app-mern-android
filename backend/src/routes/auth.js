@@ -12,12 +12,23 @@ Router.post("/signup", (req, res) => {
 
     return User.create(newUser)
     .then(doc => {
+        const payload = {
+            email: doc.email,
+            role: doc.role
+        }
+
+        const token = jwt.sign(payload, process.env.SECRET, {
+            expiresIn: '1h'
+        })
 
         delete doc._doc.password
         return res.status(201).json({
             message: "signup successful",
             error: null,
-            data: doc
+            data: {
+                ...doc._doc,
+                accessToken: token
+            }
          })
     })
     .catch(error => {
