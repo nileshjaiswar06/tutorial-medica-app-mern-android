@@ -25,6 +25,7 @@ export default function SignupPage() {
       address: ''
     }
   });
+  const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -55,6 +56,8 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setShowError(true);
+    if (!validateForm()) return; 
     setLoading(true);
 
     try {
@@ -79,6 +82,26 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
+
+  const validateForm = () => {
+    if (!formData.profile.age){
+      toast.error('Age is required');
+      return false;
+    }
+    if (!formData.profile.gender){
+      toast.error('Gender is required');
+      return false;
+    }
+    if (!formData.profile.address){
+      toast.error('Address is required');
+      return false;
+    }
+    if (formData.role === 'doctor' && !formData.profile.specialization) {
+      toast.error('Specialization is required');
+      return false;
+    }
+    return true;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -157,6 +180,9 @@ export default function SignupPage() {
                   onChange={handleChange}
                   placeholder="Enter your age"
                 />
+                {showError && !formData.profile.age && (
+                  <p className="text-red-500 text-sm mt-1">Age is required</p>
+                )}
               </div>
 
               <div>
@@ -174,6 +200,9 @@ export default function SignupPage() {
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
+                {showError && !formData.profile.gender && (
+                  <p className="text-red-500 text-sm mt-1">Gender is required</p>
+                )}
               </div>
 
               {formData.role === 'doctor' && (
@@ -187,6 +216,9 @@ export default function SignupPage() {
                     onChange={handleChange}
                     placeholder="Enter your specialization"
                   />
+                  {showError && formData.role === 'doctor' && !formData.profile.specialization && (
+                    <p className="text-red-500 text-sm mt-1">Specialization is required</p>
+                  )}
                 </div>
               )}
 
@@ -201,6 +233,9 @@ export default function SignupPage() {
                   placeholder="Enter your address"
                 />
               </div>
+              {showError && !formData.profile.address && (
+                <p className="text-red-500 text-sm mt-1">Address is required</p>
+              )}
             </div>
 
             <Button
