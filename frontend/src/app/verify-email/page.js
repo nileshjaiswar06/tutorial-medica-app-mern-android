@@ -14,6 +14,8 @@ export default function VerifyEmailPage() {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [requestLoading, setRequestLoading] = useState(false);
+  const [otpError, setOtpError] = useState(false);
+
 
   useEffect(() => {
     // Request OTP when page loads
@@ -51,6 +53,7 @@ export default function VerifyEmailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setOtpError(false);
 
     try {
       const token = localStorage.getItem('accessToken');
@@ -75,8 +78,11 @@ export default function VerifyEmailPage() {
         // Redirect based on role
         const userRole = response.data.data.role;
         router.push(`/${userRole}/dashboard`);
+      }else {
+        toast.error(response.data.message || 'invalid OTP');
       }
     } catch (error) {
+      setOtpError(true);
       const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Something went wrong';
       toast.error(errorMessage);
     } finally {
@@ -108,6 +114,9 @@ export default function VerifyEmailPage() {
                   placeholder="Enter OTP"
                 />
               </div>
+              { otpError && (
+                <p className="text-red-500 text-sm">Invalid OTP</p>
+              )}
             </div>
 
             <div className="flex flex-col gap-4">
