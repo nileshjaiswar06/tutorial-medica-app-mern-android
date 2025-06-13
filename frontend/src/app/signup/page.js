@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -245,6 +246,13 @@ export default function SignupPage() {
             >
               {loading ? 'Creating account...' : 'Sign up'}
             </Button>
+
+            <div className="text-center text-sm">
+              Already have an account?{' '}
+              <Link href="/login" className="text-green-600 hover:text-green-700 font-medium">
+                Sign in
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>
