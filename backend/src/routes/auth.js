@@ -18,7 +18,7 @@ Router.post("/signup", (req, res) => {
         }
 
         const token = jwt.sign(payload, process.env.SECRET, {
-            expiresIn: '1h'
+            expiresIn: '7d'
         })
 
         delete doc._doc.password
@@ -65,7 +65,7 @@ Router.post("/login", (req, res) => {
         }
 
         const token = jwt.sign(payload, process.env.SECRET, {
-            expiresIn: '1h'
+            expiresIn: '7d'
         })
 
         delete foundDoc._doc.password
