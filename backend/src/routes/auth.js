@@ -6,6 +6,7 @@ const OtpModel = require("../models/emailOtpVerification")
 const { verifyAccessToken } = require("../middlewares/authentication")
 const { sendMail } = require("../helper")
 
+const tokenBlacklist = new Set()
 
 Router.post("/signup", (req, res) => {
     const newUser = req.body
@@ -92,7 +93,13 @@ Router.post("/login", (req, res) => {
 
 Router.post("/logout", verifyAccessToken, (req, res) => {
     try {
-        // TODO: write logout logic 
+        // Get the token from the Authorization header
+        const token = req.headers.authorization?.split(' ')[1]
+        
+        if (token) {
+            // Add the token to the blacklist
+            tokenBlacklist.add(token)
+        }
 
         return res.status(200).json({
             message: "logout successful",
@@ -107,7 +114,6 @@ Router.post("/logout", verifyAccessToken, (req, res) => {
             data: null
          })
     }
-    
 })
 
 Router.get("/email-verify/request", verifyAccessToken, (req, res) => {
@@ -184,5 +190,7 @@ Router.post("/email-verify/submit", verifyAccessToken, (req, res) => {
     })
 })
 
-
-module.exports = Router
+module.exports = {
+    Router,
+    tokenBlacklist
+}

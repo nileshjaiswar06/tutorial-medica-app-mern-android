@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken")
 
+// Import the token blacklist from auth.js
+const { tokenBlacklist } = require("../routes/auth")
+
 function verifyAccessToken(req, res, next) {
     try {
         console.log('Backend - Auth Header:', req.headers.authorization);
@@ -11,6 +14,10 @@ function verifyAccessToken(req, res, next) {
         // Remove 'Bearer ' prefix if it exists
         const token = req.headers.authorization.replace('Bearer ', '');
         console.log('Backend - Token after Bearer removal:', token);
+        
+        if (tokenBlacklist.has(token)) {
+            throw "token has been invalidated"
+        }
         
         const verifiedData = jwt.verify(token, process.env.SECRET)
         console.log("Backend - Verified data:", verifiedData)
