@@ -49,12 +49,9 @@ export default function LoginPage() {
         // Show success message
         toast.success('Login successful!');
         
-        // Check if email is verified
-
         // Redirect based on role
-          const userRole = response.data.data.role;
-          router.push(`/${userRole}/dashboard`);
-        
+        const userRole = response.data.data.role;
+        router.push(`/${userRole}/dashboard`);
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Login failed';
@@ -65,37 +62,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md border-2 shadow-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center text-green-600">Welcome Back</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
             Sign in to your account to continue
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-4">
               <div>
-                <Label>I am a</Label>
+                <Label className="text-sm font-medium">I am a</Label>
                 <RadioGroup
                   value={formData.role}
                   onValueChange={handleRoleChange}
-                  className="flex gap-4 mt-2"
+                  className="flex gap-4 mt-1.5"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="patient" id="patient" />
-                    <Label htmlFor="patient">Patient</Label>
+                    <RadioGroupItem value="patient" id="patient" className="text-green-600" />
+                    <Label htmlFor="patient" className="text-sm">Patient</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="doctor" id="doctor" />
-                    <Label htmlFor="doctor">Doctor</Label>
+                    <RadioGroupItem value="doctor" id="doctor" className="text-green-600" />
+                    <Label htmlFor="doctor" className="text-sm">Doctor</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <Input
                   id="email"
                   name="email"
@@ -104,10 +101,11 @@ export default function LoginPage() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  className="mt-1.5"
                 />
               </div>
               <div>
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <Input
                   id="password"
                   name="password"
@@ -116,6 +114,7 @@ export default function LoginPage() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
+                  className="mt-1.5"
                 />
               </div>
             </div>
@@ -123,13 +122,13 @@ export default function LoginPage() {
             <div className="flex flex-col gap-4">
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-green-600 hover:bg-green-700 text-white mt-6"
                 disabled={loading}
               >
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
               
-              <div className="text-center text-sm">
+              <div className="text-center text-sm mt-4">
                 {`Don't have an account?${' '}`}
                 <Link 
                   href="/signup" 
