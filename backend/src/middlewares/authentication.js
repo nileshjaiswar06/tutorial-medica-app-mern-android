@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken")
-
-// Import the token blacklist from auth.js
-const { tokenBlacklist } = require("../routes/auth")
+const tokenBlacklist = require("../utils/tokenBlacklist")
 
 function verifyAccessToken(req, res, next) {
     try {

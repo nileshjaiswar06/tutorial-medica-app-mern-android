@@ -5,9 +5,7 @@ const User = require("../models/user")
 const OtpModel = require("../models/emailOtpVerification")
 const { verifyAccessToken } = require("../middlewares/authentication")
 const { sendMail } = require("../helper")
-
-// Create a simple in-memory token blacklist
-const tokenBlacklist = new Set()
+const tokenBlacklist = require("../utils/tokenBlacklist")
 
 Router.post("/signup", (req, res) => {
     const newUser = req.body
@@ -190,6 +188,5 @@ Router.post("/email-verify/submit", verifyAccessToken, (req, res) => {
 })
 
 module.exports = {
-    Router,
-    tokenBlacklist
+    Router
 }
