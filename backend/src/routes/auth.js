@@ -6,6 +6,7 @@ const OtpModel = require("../models/emailOtpVerification")
 const { verifyAccessToken } = require("../middlewares/authentication")
 const { sendMail } = require("../helper")
 
+// Create a simple in-memory token blacklist
 const tokenBlacklist = new Set()
 
 Router.post("/signup", (req, res) => {
@@ -93,11 +94,9 @@ Router.post("/login", (req, res) => {
 
 Router.post("/logout", verifyAccessToken, (req, res) => {
     try {
-        // Get the token from the Authorization header
         const token = req.headers.authorization?.split(' ')[1]
         
         if (token) {
-            // Add the token to the blacklist
             tokenBlacklist.add(token)
         }
 
