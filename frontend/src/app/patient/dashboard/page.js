@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,14 @@ import { Search, Calendar, FileUp, User, LogOut } from 'lucide-react';
 
 export default function PatientDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,7 +45,11 @@ export default function PatientDashboard() {
                 <User className="w-5 h-5" />
                 <span>Profile</span>
               </Link>
-              <Button variant="ghost" className="text-gray-600 hover:text-green-600 flex items-center space-x-1">
+              <Button 
+                variant="ghost" 
+                className="text-gray-600 hover:text-green-600 flex items-center space-x-1"
+                onClick={handleLogout}
+              >
                 <LogOut className="w-5 h-5" />
                 <span>Logout</span>
               </Button>
