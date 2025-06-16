@@ -16,7 +16,6 @@ export default function VerifyEmailPage() {
   const [requestLoading, setRequestLoading] = useState(false);
   const [otpError, setOtpError] = useState(false);
 
-
   useEffect(() => {
     // Request OTP when page loads
     handleRequestOtp();
@@ -91,19 +90,19 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Verify Your Email</CardTitle>
-          <CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md border-2 shadow-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center text-green-600">Verify Your Email</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
             Please enter the OTP sent to your email address
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-4">
               <div>
-                <Label htmlFor="otp">OTP</Label>
+                <Label htmlFor="otp" className="text-sm font-medium">OTP</Label>
                 <Input
                   id="otp"
                   name="otp"
@@ -112,17 +111,18 @@ export default function VerifyEmailPage() {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   placeholder="Enter OTP"
+                  className="mt-1.5"
                 />
               </div>
               { otpError && (
-                <p className="text-red-500 text-sm">Invalid OTP</p>
+                <p className="text-red-500 text-sm mt-1">Invalid OTP</p>
               )}
             </div>
 
             <div className="flex flex-col gap-4">
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-green-600 hover:bg-green-700 text-white mt-6"
                 disabled={loading}
               >
                 {loading ? 'Verifying...' : 'Verify Email'}
@@ -131,7 +131,7 @@ export default function VerifyEmailPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full border-green-600 text-green-600 hover:bg-green-50"
                 onClick={handleRequestOtp}
                 disabled={requestLoading}
               >
