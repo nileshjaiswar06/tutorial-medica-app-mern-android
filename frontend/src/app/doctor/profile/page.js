@@ -14,6 +14,20 @@ export default function DoctorProfilePage() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return "Not provided";
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("accessToken");
@@ -67,22 +81,38 @@ export default function DoctorProfilePage() {
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-green-800">Personal Information</h3>
-                <div className="space-y-2">
-                  <p><span className="font-medium">Email:</span> {userData.email}</p>
-                  <p><span className="font-medium">Phone:</span> {userData.phone || "Not provided"}</p>
-                  <p><span className="font-medium">Location:</span> {userData.location || "Not provided"}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-green-800">Professional Information</h3>
-                <div className="space-y-2">
-                  <p><span className="font-medium">Specialization:</span> {userData.specialization || "Not specified"}</p>
-                  <p><span className="font-medium">Experience:</span> {userData.experience || "Not specified"}</p>
-                  <p><span className="font-medium">License Number:</span> {userData.licenseNumber || "Not provided"}</p>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-green-800">Profile Information</h3>
+                  <div className="space-y-3">
+                    <p className="flex justify-between">
+                      <span className="font-medium text-gray-600">Email:</span>
+                      <span className="text-gray-800">{userData.email || "Not provided"}</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="font-medium text-gray-600">Contact Number:</span>
+                      <span className="text-gray-800">{userData.phone || "Not provided"}</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="font-medium text-gray-600">Date of Birth:</span>
+                      <span className="text-gray-800">
+                        {userData.dateOfBirth ? new Date(userData.dateOfBirth).toLocaleDateString() : "Not provided"}
+                      </span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="font-medium text-gray-600">Age:</span>
+                      <span className="text-gray-800">{calculateAge(userData.dateOfBirth)} years</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="font-medium text-gray-600">Specialization:</span>
+                      <span className="text-gray-800">{userData.specialization || "Not provided"}</span>
+                    </p>
+                    <p className="flex justify-between">
+                      <span className="font-medium text-gray-600">Address:</span>
+                      <span className="text-gray-800">{userData.address || "Not provided"}</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

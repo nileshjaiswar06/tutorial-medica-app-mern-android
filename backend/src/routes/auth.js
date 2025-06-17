@@ -9,6 +9,7 @@ const tokenBlacklist = require("../utils/tokenBlacklist")
 
 Router.post("/signup", (req, res) => {
     const newUser = req.body
+    console.log("Received newUser for signup:", newUser);
 
     return User.create(newUser)
     .then(doc => {

@@ -11,6 +11,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import Link from "next/link";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -20,7 +23,8 @@ export default function SignupPage() {
     password: '',
     role: 'patient',
     profile: {
-      age: '',
+      phone: '',
+      dateOfBirth: null,
       gender: '',
       specialization: '',
       address: ''
@@ -28,6 +32,20 @@ export default function SignupPage() {
   });
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return '';
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +66,16 @@ export default function SignupPage() {
     }
   };
 
+  const handleDateChange = (date) => {
+    setFormData(prev => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        dateOfBirth: date,
+      }
+    }));
+  };
+
   const handleRoleChange = (value) => {
     setFormData(prev => ({
       ...prev,
@@ -62,14 +90,21 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/signup', formData);
+      const finalFormData = {
+        ...formData,
+        profile: {
+          ...formData.profile,
+          age: calculateAge(formData.profile.dateOfBirth),
+          dateOfBirth: formData.profile.dateOfBirth ? format(formData.profile.dateOfBirth, 'yyyy-MM-dd') : '',
+        }
+      };
+
+      const response = await axios.post('/api/auth/signup', finalFormData);
       
       if (response.data) {
-        // Store the access token
         if (response.data.data.accessToken) {
           localStorage.setItem('accessToken', response.data.data.accessToken);
           toast.success('Account created successfully!');
-          // Redirect to email verification page
           router.push('/verify-email');
         } else {
           throw new Error('No access token received');
@@ -85,8 +120,12 @@ export default function SignupPage() {
   };
 
   const validateForm = () => {
-    if (!formData.profile.age){
-      toast.error('Age is required');
+    if (!formData.profile.phone){
+      toast.error('Contact Number is required');
+      return false;
+    }
+    if (!formData.profile.dateOfBirth){
+      toast.error('Date of Birth is required');
       return false;
     }
     if (!formData.profile.gender){
@@ -101,8 +140,15 @@ export default function SignupPage() {
       toast.error('Specialization is required');
       return false;
     }
+    if (formData.role === 'doctor' && calculateAge(formData.profile.dateOfBirth) < 22) {
+      toast.error('Doctors must be at least 22 years old.');
+      return false;
+    }
     return true;
   }
+
+  const doctorMaxDate = new Date();
+  doctorMaxDate.setFullYear(doctorMaxDate.getFullYear() - 22);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
@@ -158,47 +204,83 @@ export default function SignupPage() {
                 />
               </div>
 
+              {/* Contact Number Input */}
               <div>
-                <Label className="text-sm font-medium">I am a</Label>
-                <RadioGroup
-                  value={formData.role}
-                  onValueChange={handleRoleChange}
-                  className="flex gap-4 mt-1.5"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="patient" id="patient" className="text-green-600" />
-                    <Label htmlFor="patient" className="text-sm">Patient</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="doctor" id="doctor" className="text-green-600" />
-                    <Label htmlFor="doctor" className="text-sm">Doctor</Label>
-                  </div>
-                </RadioGroup>
+                <Label htmlFor="phone" className="text-sm font-medium">Contact Number</Label>
+                <Input
+                  id="phone"
+                  name="profile.phone"
+                  type="tel"
+                  required
+                  value={formData.profile.phone}
+                  onChange={handleChange}
+                  placeholder="Enter your contact number"
+                  className="mt-1.5"
+                />
+                {showError && !formData.profile.phone && (
+                  <p className="text-red-500 text-sm mt-1">Contact Number is required</p>
+                )}
               </div>
 
+              {/* Date of Birth Calendar */}
+              <div>
+                <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</Label>
+                <DatePicker
+                  selected={formData.profile.dateOfBirth}
+                  onChange={handleDateChange}
+                  dateFormat="P"
+                  showYearDropdown
+                  showMonthDropdown
+                  dropdownMode="select"
+                  placeholderText="Select your date of birth"
+                  className="w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1.5 rounded-md h-10"
+                  maxDate={doctorMaxDate}
+                />
+                {showError && !formData.profile.dateOfBirth && (
+                  <p className="text-red-500 text-sm mt-1">Date of Birth is required</p>
+                )}
+              </div>
+
+              {/* Auto-calculated Age */}
               <div>
                 <Label htmlFor="age" className="text-sm font-medium">Age</Label>
                 <Input
                   id="age"
                   name="profile.age"
                   type="number"
-                  value={formData.profile.age}
-                  onChange={handleChange}
-                  placeholder="Enter your age"
+                  readOnly
+                  value={calculateAge(formData.profile.dateOfBirth)}
                   className="mt-1.5"
                 />
-                {showError && !formData.profile.age && (
-                  <p className="text-red-500 text-sm mt-1">Age is required</p>
-                )}
               </div>
 
+              {/* Role Selection */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">I am a</Label>
+                <RadioGroup
+                  value={formData.role}
+                  onValueChange={handleRoleChange}
+                  className="flex items-center space-x-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="patient" id="patient" />
+                    <Label htmlFor="patient" className="text-sm font-normal">Patient</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="doctor" id="doctor" />
+                    <Label htmlFor="doctor" className="text-sm font-normal">Doctor</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Gender Selection */}
               <div>
                 <Label htmlFor="gender" className="text-sm font-medium">Gender</Label>
                 <Select
                   value={formData.profile.gender}
                   onValueChange={(value) => handleChange({ target: { name: 'profile.gender', value } })}
                 >
-                  <SelectTrigger className="mt-1.5">
+                  <SelectTrigger className="w-full mt-1.5">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
@@ -212,6 +294,7 @@ export default function SignupPage() {
                 )}
               </div>
 
+              {/* Specialization Input (only for doctors) */}
               {formData.role === 'doctor' && (
                 <div>
                   <Label htmlFor="specialization" className="text-sm font-medium">Specialization</Label>
@@ -219,9 +302,10 @@ export default function SignupPage() {
                     id="specialization"
                     name="profile.specialization"
                     type="text"
+                    required={formData.role === 'doctor'}
                     value={formData.profile.specialization}
                     onChange={handleChange}
-                    placeholder="Enter your specialization"
+                    placeholder="e.g., Cardiology, Pediatrics"
                     className="mt-1.5"
                   />
                   {showError && formData.role === 'doctor' && !formData.profile.specialization && (
@@ -230,12 +314,14 @@ export default function SignupPage() {
                 </div>
               )}
 
+              {/* Address Input */}
               <div>
                 <Label htmlFor="address" className="text-sm font-medium">Address</Label>
                 <Input
                   id="address"
                   name="profile.address"
                   type="text"
+                  required
                   value={formData.profile.address}
                   onChange={handleChange}
                   placeholder="Enter your address"
@@ -245,24 +331,19 @@ export default function SignupPage() {
                   <p className="text-red-500 text-sm mt-1">Address is required</p>
                 )}
               </div>
-            </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white mt-6"
-              disabled={loading}
-            >
-              {loading ? 'Creating account...' : 'Sign up'}
-            </Button>
-
-            <div className="text-center text-sm mt-4">
-              Already have an account?{' '}
-              <Link href="/login" className="text-green-600 hover:text-green-700 font-medium">
-                Sign in
-              </Link>
+              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md transition-colors duration-200" disabled={loading}>
+                {loading ? 'Signing Up...' : 'Sign Up'}
+              </Button>
             </div>
           </form>
         </CardContent>
+        <CardFooter className="flex justify-center text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <Link href="/login" className="font-medium text-green-600 hover:text-green-700">
+            Log In
+          </Link>
+        </CardFooter>
       </Card>
     </div>
   );
