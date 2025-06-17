@@ -52,7 +52,7 @@ export default function LoginPage() {
           name: response.data.data.name,
           email: response.data.data.email,
           role: response.data.data.role,
-          // Add any other user data you want to store
+          profile: response.data.data.profile // Add profile data here
         };
         localStorage.setItem('user', JSON.stringify(userData));
         

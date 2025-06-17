@@ -92,25 +92,25 @@ export default function DoctorProfilePage() {
                     </p>
                     <p className="flex justify-between">
                       <span className="font-medium text-gray-600">Contact Number:</span>
-                      <span className="text-gray-800">{userData.phone || "Not provided"}</span>
+                      <span className="text-gray-800">{userData.profile?.phone || "Not provided"}</span>
                     </p>
                     <p className="flex justify-between">
                       <span className="font-medium text-gray-600">Date of Birth:</span>
                       <span className="text-gray-800">
-                        {userData.dateOfBirth ? new Date(userData.dateOfBirth).toLocaleDateString() : "Not provided"}
+                        {userData.profile?.dateOfBirth ? new Date(userData.profile.dateOfBirth).toLocaleDateString() : "Not provided"}
                       </span>
                     </p>
                     <p className="flex justify-between">
                       <span className="font-medium text-gray-600">Age:</span>
-                      <span className="text-gray-800">{calculateAge(userData.dateOfBirth)} years</span>
+                      <span className="text-gray-800">{calculateAge(userData.profile?.dateOfBirth)} years</span>
                     </p>
                     <p className="flex justify-between">
                       <span className="font-medium text-gray-600">Specialization:</span>
-                      <span className="text-gray-800">{userData.specialization || "Not provided"}</span>
+                      <span className="text-gray-800">{userData.profile?.specialization || "Not provided"}</span>
                     </p>
                     <p className="flex justify-between">
                       <span className="font-medium text-gray-600">Address:</span>
-                      <span className="text-gray-800">{userData.address || "Not provided"}</span>
+                      <span className="text-gray-800">{userData.profile?.address || "Not provided"}</span>
                     </p>
                   </div>
                 </div>

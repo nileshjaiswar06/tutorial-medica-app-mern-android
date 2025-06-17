@@ -103,7 +103,19 @@ export default function SignupPage() {
       
       if (response.data) {
         if (response.data.data.accessToken) {
+          // Store access token
           localStorage.setItem('accessToken', response.data.data.accessToken);
+          
+          // Store user data
+          const userData = {
+            id: response.data.data._id,
+            name: response.data.data.name,
+            email: response.data.data.email,
+            role: response.data.data.role,
+            profile: response.data.data.profile
+          };
+          localStorage.setItem('user', JSON.stringify(userData));
+          
           toast.success('Account created successfully!');
           router.push('/verify-email');
         } else {

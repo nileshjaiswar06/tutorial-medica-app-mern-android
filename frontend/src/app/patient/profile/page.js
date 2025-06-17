@@ -14,6 +14,20 @@ export default function PatientProfilePage() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return "Not provided";
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("accessToken");
@@ -72,17 +86,10 @@ export default function PatientProfilePage() {
                 <h3 className="text-lg font-semibold text-green-800">Personal Information</h3>
                 <div className="space-y-2">
                   <p><span className="font-medium">Email:</span> {userData.email}</p>
-                  <p><span className="font-medium">Phone:</span> {userData.phone || "Not provided"}</p>
-                  <p><span className="font-medium">Location:</span> {userData.location || "Not provided"}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-green-800">Medical Information</h3>
-                <div className="space-y-2">
-                  <p><span className="font-medium">Blood Group:</span> {userData.bloodGroup || "Not specified"}</p>
-                  <p><span className="font-medium">Allergies:</span> {userData.allergies || "None"}</p>
-                  <p><span className="font-medium">Medical History:</span> {userData.medicalHistory || "Not provided"}</p>
+                  <p><span className="font-medium">Phone:</span> {userData.profile?.phone || "Not provided"}</p>
+                  <p><span className="font-medium">Date of Birth:</span> {userData.profile?.dateOfBirth ? new Date(userData.profile.dateOfBirth).toLocaleDateString() : "Not provided"}</p>
+                  <p><span className="font-medium">Age:</span> {calculateAge(userData.profile?.dateOfBirth)} years</p>
+                  <p><span className="font-medium">Location:</span> {userData.profile?.address || "Not provided"}</p>
                 </div>
               </div>
             </div>

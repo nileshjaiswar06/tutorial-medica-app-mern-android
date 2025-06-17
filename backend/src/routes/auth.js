@@ -11,11 +11,37 @@ Router.post("/signup", (req, res) => {
     const newUser = req.body
     console.log("Received newUser for signup:", newUser);
 
+    // Validate required profile fields based on role
+    if (newUser.role === 'doctor') {
+        if (!newUser.profile?.specialization) {
+            return res.status(422).json({
+                message: "Specialization is required for doctors",
+                error: "Missing required field",
+                data: null
+            });
+        }
+    }
+
+    // Ensure profile object exists
+    if (!newUser.profile) {
+        newUser.profile = {};
+    }
+
+    // Validate common required fields
+    if (!newUser.profile.phone || !newUser.profile.dateOfBirth || !newUser.profile.gender || !newUser.profile.address) {
+        return res.status(422).json({
+            message: "Missing required profile fields",
+            error: "Phone, date of birth, gender, and address are required",
+            data: null
+        });
+    }
+
     return User.create(newUser)
     .then(doc => {
         const payload = {
             email: doc.email,
-            role: doc.role
+            role: doc.role,
+            id: doc._id
         }
 
         const token = jwt.sign(payload, process.env.SECRET, {
@@ -33,9 +59,10 @@ Router.post("/signup", (req, res) => {
          })
     })
     .catch(error => {
+        console.error("Signup error:", error);
         return res.status(422).json({
             message: "signup failed",
-            error: error,
+            error: error.message || error,
             data: null
          })
     })
@@ -62,7 +89,8 @@ Router.post("/login", (req, res) => {
 
         const payload = {
             email: foundDoc.email,
-            role: foundDoc.role
+            role: foundDoc.role,
+            id: foundDoc._id
         }
 
         const token = jwt.sign(payload, process.env.SECRET, {
@@ -81,11 +109,11 @@ Router.post("/login", (req, res) => {
          })
     })
     .catch(error => {
-        console.log(" error: ", error)
+        console.error("Login error:", error);
 
         return res.status(403).json({
             message: "login failed",
-            error: error,
+            error: error.message || error,
             data: null
          })
     })
