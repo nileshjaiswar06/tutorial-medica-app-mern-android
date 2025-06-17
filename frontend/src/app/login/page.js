@@ -46,6 +46,16 @@ export default function LoginPage() {
         // Store the token
         localStorage.setItem('accessToken', response.data.data.accessToken);
         
+        // Store user data
+        const userData = {
+          id: response.data.data.id,
+          name: response.data.data.name,
+          email: response.data.data.email,
+          role: response.data.data.role,
+          // Add any other user data you want to store
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        
         // Show success message
         toast.success('Login successful!');
         

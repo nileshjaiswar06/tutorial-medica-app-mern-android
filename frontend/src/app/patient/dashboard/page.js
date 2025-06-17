@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Calendar, FileUp, User, LogOut } from 'lucide-react';
+import { Search, Calendar, FileText, User, LogOut, Clock, Stethoscope } from 'lucide-react';
 
 export default function PatientDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +15,6 @@ export default function PatientDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
     router.push('/');
   };
 
@@ -32,11 +31,15 @@ export default function PatientDashboard() {
               <div className="hidden md:flex items-center space-x-4">
                 <Link href="/patient/appointments" className="text-gray-600 hover:text-green-600 flex items-center space-x-1">
                   <Calendar className="w-5 h-5" />
-                  <span>Appointments</span>
+                  <span>My Appointments</span>
                 </Link>
-                <Link href="/patient/reports" className="text-gray-600 hover:text-green-600 flex items-center space-x-1">
-                  <FileUp className="w-5 h-5" />
-                  <span>Upload Reports</span>
+                <Link href="/patient/doctors" className="text-gray-600 hover:text-green-600 flex items-center space-x-1">
+                  <Stethoscope className="w-5 h-5" />
+                  <span>Find Doctors</span>
+                </Link>
+                <Link href="/patient/medical-records" className="text-gray-600 hover:text-green-600 flex items-center space-x-1">
+                  <FileText className="w-5 h-5" />
+                  <span>Medical Records</span>
                 </Link>
               </div>
             </div>
@@ -66,7 +69,7 @@ export default function PatientDashboard() {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Search by specialization or symptoms..."
+              placeholder="Search doctors by name, specialization, or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 w-full"
@@ -79,36 +82,36 @@ export default function PatientDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
+              <CardTitle className="text-lg">Upcoming Appointments</CardTitle>
+              <CardDescription>View and manage your scheduled appointments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full bg-green-600 hover:bg-green-700">
+                View Schedule
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-lg">Medical Records</CardTitle>
+              <CardDescription>Access your medical history and reports</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full bg-green-600 hover:bg-green-700">
+                View Records
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
               <CardTitle className="text-lg">Book Appointment</CardTitle>
-              <CardDescription>Schedule a consultation with a doctor</CardDescription>
+              <CardDescription>Schedule a new appointment with a doctor</CardDescription>
             </CardHeader>
             <CardContent>
               <Button className="w-full bg-green-600 hover:bg-green-700">
                 Book Now
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-lg">Upload Reports</CardTitle>
-              <CardDescription>Share your medical reports with doctors</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full bg-green-600 hover:bg-green-700">
-                Upload
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-lg">View History</CardTitle>
-              <CardDescription>Check your past appointments and reports</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full bg-green-600 hover:bg-green-700">
-                View History
               </Button>
             </CardContent>
           </Card>
@@ -120,19 +123,19 @@ export default function PatientDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="text-center text-gray-500">
-                No upcoming appointments
+                No upcoming appointments scheduled
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Recent Reports */}
+        {/* Recent Medical Records */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Reports</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Medical Records</h2>
           <Card>
             <CardContent className="p-6">
               <div className="text-center text-gray-500">
-                No recent reports
+                No recent medical records available
               </div>
             </CardContent>
           </Card>
