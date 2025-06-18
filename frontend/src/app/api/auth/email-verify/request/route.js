@@ -17,12 +17,12 @@ export async function GET(request) {
     
     const response = await axios.get('http://localhost:5000/v1/auth/email-verify/request', {
       headers: {
-        'Authorization': authHeader,
+        'Authorization': authHeader, 
         'Content-Type': 'application/json',
       },
     });
 
-    return NextResponse.json(response.data);
+    return NextResponse.json(response.data); 
   } catch (error) {
     console.error('Email verification request error:', error.response?.data || error.message);
     
