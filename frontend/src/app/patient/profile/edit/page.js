@@ -149,24 +149,6 @@ export default function PatientProfileEditPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("accessToken");
-      await axios.delete("http://localhost:5000/v1/user", { headers: { Authorization: `Bearer ${token}` } });
-      localStorage.removeItem("user");
-      localStorage.removeItem("accessToken");
-      toast.success("Account deleted successfully.");
-      router.push("/login");
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Delete failed';
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="relative w-full max-w-md">
@@ -285,9 +267,12 @@ export default function PatientProfileEditPage() {
                 <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white" disabled={loading}>
                   {loading ? "Saving..." : "Save Changes"}
                 </Button>
-                <Button type="button" variant="destructive" className="w-full" onClick={handleDelete} disabled={loading}>
-                  {loading ? "Deleting..." : "Delete Account"}
-                </Button>
+                <a
+                  href="/patient/profile/delete"
+                  className="mt-2 text-center text-red-600 underline hover:text-red-800 text-sm"
+                >
+                  Delete Account
+                </a>
               </div>
             </form>
           </CardContent>
