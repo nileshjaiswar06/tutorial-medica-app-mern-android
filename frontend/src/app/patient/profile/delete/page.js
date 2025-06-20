@@ -10,9 +10,9 @@ import { toast } from "sonner";
 export default function PatientDeleteAccountPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
     setLoading(true);
     try {
       const token = localStorage.getItem("accessToken");
@@ -44,7 +44,7 @@ export default function PatientDeleteAccountPage() {
               type="button"
               variant="destructive"
               className="w-full"
-              onClick={handleDelete}
+              onClick={() => setShowModal(true)}
               disabled={loading}
             >
               {loading ? "Deleting..." : "Confirm Delete Account"}
@@ -61,6 +61,35 @@ export default function PatientDeleteAccountPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+            <h2 className="text-lg font-bold text-red-600 mb-4">Are you sure?</h2>
+            <p className="mb-6">This action cannot be undone. Do you really want to delete your account?</p>
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowModal(false)}
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setShowModal(false);
+                  handleDelete();
+                }}
+                disabled={loading}
+              >
+                Yes, Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
