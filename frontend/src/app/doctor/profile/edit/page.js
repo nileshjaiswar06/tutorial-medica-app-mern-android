@@ -12,6 +12,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { X } from 'lucide-react'
 
 export default function DoctorProfileEditPage() {
   const router = useRouter();
@@ -181,137 +182,146 @@ export default function DoctorProfileEditPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md border-2 shadow-lg">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center text-green-600">Edit Profile</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  className="mt-1.5"
-                />
-                {showError && !formData.name && (
-                  <p className="text-red-500 text-sm mt-1">Name is required</p>
-                )}
+      <div className="relative w-full max-w-md">
+        <Card className="border-2 shadow-lg">
+          <button
+            type="button"
+            aria-label="Close edit profile"
+            onClick={() => router.push('/doctor/profile')}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <X size={24} />
+          </button>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center text-green-600">Edit Profile</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your full name"
+                    className="mt-1.5"
+                  />
+                  {showError && !formData.name && (
+                    <p className="text-red-500 text-sm mt-1">Name is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="phone" className="text-sm font-medium">Contact Number</Label>
+                  <Input
+                    id="phone"
+                    name="profile.phone"
+                    type="tel"
+                    required
+                    value={formData.profile.phone}
+                    onChange={handleChange}
+                    placeholder="Enter your contact number"
+                    className="mt-1.5"
+                  />
+                  {showError && !formData.profile.phone && (
+                    <p className="text-red-500 text-sm mt-1">Contact Number is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</Label>
+                  <DatePicker
+                    selected={formData.profile.dateOfBirth}
+                    onChange={handleDateChange}
+                    dateFormat="P"
+                    showYearDropdown
+                    showMonthDropdown
+                    dropdownMode="select"
+                    placeholderText="Select your date of birth"
+                    className="w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1.5 rounded-md h-10"
+                    maxDate={doctorMaxDate}
+                  />
+                  {showError && !formData.profile.dateOfBirth && (
+                    <p className="text-red-500 text-sm mt-1">Date of Birth is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="gender" className="text-sm font-medium">Gender</Label>
+                  <Select
+                    value={formData.profile.gender}
+                    onValueChange={(value) => handleChange({ target: { name: 'profile.gender', value } })}
+                  >
+                    <SelectTrigger className="w-full mt-1.5">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {showError && !formData.profile.gender && (
+                    <p className="text-red-500 text-sm mt-1">Gender is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="specialization" className="text-sm font-medium">Specialization</Label>
+                  <Input
+                    id="specialization"
+                    name="profile.specialization"
+                    type="text"
+                    required
+                    value={formData.profile.specialization}
+                    onChange={handleChange}
+                    placeholder="Enter your specialization"
+                    className="mt-1.5"
+                  />
+                  {showError && !formData.profile.specialization && (
+                    <p className="text-red-500 text-sm mt-1">Specialization is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="address" className="text-sm font-medium">Address</Label>
+                  <Input
+                    id="address"
+                    name="profile.address"
+                    type="text"
+                    required
+                    value={formData.profile.address}
+                    onChange={handleChange}
+                    placeholder="Enter your address"
+                    className="mt-1.5"
+                  />
+                  {showError && !formData.profile.address && (
+                    <p className="text-red-500 text-sm mt-1">Address is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="age" className="text-sm font-medium">Age</Label>
+                  <Input
+                    id="age"
+                    name="profile.age"
+                    type="number"
+                    readOnly
+                    value={calculateAge(formData.profile.dateOfBirth)}
+                    className="mt-1.5"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="phone" className="text-sm font-medium">Contact Number</Label>
-                <Input
-                  id="phone"
-                  name="profile.phone"
-                  type="tel"
-                  required
-                  value={formData.profile.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your contact number"
-                  className="mt-1.5"
-                />
-                {showError && !formData.profile.phone && (
-                  <p className="text-red-500 text-sm mt-1">Contact Number is required</p>
-                )}
+              <div className="flex flex-col gap-3 mt-6">
+                <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white" disabled={loading}>
+                  {loading ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button type="button" variant="destructive" className="w-full" onClick={handleDelete} disabled={loading}>
+                  {loading ? "Deleting..." : "Delete Account"}
+                </Button>
               </div>
-              <div>
-                <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</Label>
-                <DatePicker
-                  selected={formData.profile.dateOfBirth}
-                  onChange={handleDateChange}
-                  dateFormat="P"
-                  showYearDropdown
-                  showMonthDropdown
-                  dropdownMode="select"
-                  placeholderText="Select your date of birth"
-                  className="w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1.5 rounded-md h-10"
-                  maxDate={doctorMaxDate}
-                />
-                {showError && !formData.profile.dateOfBirth && (
-                  <p className="text-red-500 text-sm mt-1">Date of Birth is required</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="gender" className="text-sm font-medium">Gender</Label>
-                <Select
-                  value={formData.profile.gender}
-                  onValueChange={(value) => handleChange({ target: { name: 'profile.gender', value } })}
-                >
-                  <SelectTrigger className="w-full mt-1.5">
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                {showError && !formData.profile.gender && (
-                  <p className="text-red-500 text-sm mt-1">Gender is required</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="specialization" className="text-sm font-medium">Specialization</Label>
-                <Input
-                  id="specialization"
-                  name="profile.specialization"
-                  type="text"
-                  required
-                  value={formData.profile.specialization}
-                  onChange={handleChange}
-                  placeholder="Enter your specialization"
-                  className="mt-1.5"
-                />
-                {showError && !formData.profile.specialization && (
-                  <p className="text-red-500 text-sm mt-1">Specialization is required</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="address" className="text-sm font-medium">Address</Label>
-                <Input
-                  id="address"
-                  name="profile.address"
-                  type="text"
-                  required
-                  value={formData.profile.address}
-                  onChange={handleChange}
-                  placeholder="Enter your address"
-                  className="mt-1.5"
-                />
-                {showError && !formData.profile.address && (
-                  <p className="text-red-500 text-sm mt-1">Address is required</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="age" className="text-sm font-medium">Age</Label>
-                <Input
-                  id="age"
-                  name="profile.age"
-                  type="number"
-                  readOnly
-                  value={calculateAge(formData.profile.dateOfBirth)}
-                  className="mt-1.5"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-3 mt-6">
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white" disabled={loading}>
-                {loading ? "Saving..." : "Save Changes"}
-              </Button>
-              <Button type="button" variant="destructive" className="w-full" onClick={handleDelete} disabled={loading}>
-                {loading ? "Deleting..." : "Delete Account"}
-              </Button>
-              <Button type="button" variant="outline" className="w-full" onClick={() => router.push("/doctor/profile")}>Cancel</Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 } 
