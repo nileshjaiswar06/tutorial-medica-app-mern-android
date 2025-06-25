@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Calendar, FileText, User, LogOut, Clock, Users } from 'lucide-react';
+import { Search, Calendar, User, LogOut, Clock, Users } from 'lucide-react';
 
 export default function DoctorDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
