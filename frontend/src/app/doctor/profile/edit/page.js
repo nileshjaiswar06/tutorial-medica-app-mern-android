@@ -17,6 +17,7 @@ import { X } from 'lucide-react'
 export default function DoctorProfileEditPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    email: '',
     name: '',
     profile: {
       phone: '',
@@ -42,6 +43,7 @@ export default function DoctorProfileEditPage() {
       return;
     }
     setFormData({
+      email: user.email || '',
       name: user.name || '',
       profile: {
         phone: user.profile?.phone || '',
@@ -95,6 +97,10 @@ export default function DoctorProfileEditPage() {
   };
 
   const validateForm = () => {
+    if (!formData.email) {
+      toast.error('Email is required');
+      return false;
+    }
     if (!formData.name) {
       toast.error('Name is required');
       return false;
@@ -134,6 +140,7 @@ export default function DoctorProfileEditPage() {
     try {
       const token = localStorage.getItem("accessToken");
       const updateData = {
+        email: formData.email,
         name: formData.name,
         profile: {
           ...formData.profile,
@@ -194,6 +201,22 @@ export default function DoctorProfileEditPage() {
                   />
                   {showError && !formData.name && (
                     <p className="text-red-500 text-sm mt-1">Name is required</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="text"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter your Email"
+                    className="mt-1.5"
+                  />
+                  {showError && !formData.email && (
+                    <p className="text-red-500 text-sm mt-1">Email is required</p>
                   )}
                 </div>
                 <div>
